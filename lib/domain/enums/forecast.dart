@@ -1,0 +1,1 @@
+enum Forecast {clean, rain, cloudy, storm}
