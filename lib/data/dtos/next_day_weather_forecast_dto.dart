@@ -14,7 +14,8 @@ class NextDayWeatherForecastDto extends NextDayWeatherForecastEntity {
     return {
       'maxTemp': maxTemp,
       'minTemp': minTemp,
-      'day': day.millisecondsSinceEpoch,
+      'day': day,
+      'forecast': forecast.name,
     };
   }
 
@@ -22,8 +23,8 @@ class NextDayWeatherForecastDto extends NextDayWeatherForecastEntity {
     return NextDayWeatherForecastDto(
       maxTemp: map['maxTemp'],
       minTemp: map['minTemp'],
-      day: DateTime.fromMillisecondsSinceEpoch(map['day']),
-      forecast: Forecast.clean,
+      day: DateTime.parse(map['day']),
+      forecast: ForecastExt.getByName(map['forecast']),
     );
   }
 

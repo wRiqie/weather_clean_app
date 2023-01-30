@@ -2,6 +2,7 @@ import 'dart:convert';
 
 
 import 'package:weather_clean_app/domain/entities/day_weather_entity.dart';
+import 'package:weather_clean_app/domain/enums/forecast.dart';
 
 class DayWeatherDto extends DayWeatherEntity {
   DayWeatherDto({
@@ -20,7 +21,7 @@ class DayWeatherDto extends DayWeatherEntity {
       'rainfallChance': rainfallChance,
       'windsVelocity': windsVelocity,
       'day': day.millisecondsSinceEpoch,
-      'forecast': forecast,
+      'forecast': forecast.name,
     };
   }
 
@@ -31,7 +32,7 @@ class DayWeatherDto extends DayWeatherEntity {
       rainfallChance: map['rainfallChance'],
       windsVelocity: map['windsVelocity'],
       day: DateTime.fromMillisecondsSinceEpoch(map['day']),
-      forecast: map['forecast'],
+      forecast: ForecastExt.getByName(map['forecast'] ?? 'clean'),
     );
   }
 

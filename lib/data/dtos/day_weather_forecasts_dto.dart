@@ -16,8 +16,8 @@ class DayWeatherForecastsDto extends DayWeatherForecastsEntity {
 
   factory DayWeatherForecastsDto.fromMap(Map<String, dynamic> map) {
     return DayWeatherForecastsDto(
-      day: map['day'],
-      weathersD: (map['weather'] as List<Map<String, dynamic>>)
+      day: DateTime.parse(map['day']),
+      weathersD: (map['weathers'] as List<Map<String, dynamic>>)
           .map((e) => DayWeatherDto.fromMap(e))
           .toList(),
     );
