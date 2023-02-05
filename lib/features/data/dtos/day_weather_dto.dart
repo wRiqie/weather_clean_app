@@ -19,7 +19,7 @@ class DayWeatherDto extends DayWeatherEntity {
       'hour': hour,
       'rainfallChance': rainfallChance,
       'windsVelocity': windsVelocity,
-      'day': day.millisecondsSinceEpoch,
+      'day': day,
       'forecast': forecast.name,
     };
   }
@@ -30,12 +30,11 @@ class DayWeatherDto extends DayWeatherEntity {
       hour: map['hour'],
       rainfallChance: map['rainfallChance'],
       windsVelocity: map['windsVelocity'],
-      day: DateTime.fromMillisecondsSinceEpoch(map['day']),
-      forecast: ForecastExt.getByName(map['forecast'] ?? 'clean'),
+      day: DateTime.tryParse(map['day'].toString()),
+      forecast: Forecast.values
+          .firstWhere((e) => e.name == (map['forecast'] ?? 'clean')),
     );
   }
 
   String toJson() => json.encode(toMap());
-
-  factory DayWeatherDto.fromJson(String source) => DayWeatherDto.fromMap(json.decode(source) as Map<String, dynamic>);
 }

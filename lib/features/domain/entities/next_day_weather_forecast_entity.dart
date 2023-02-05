@@ -12,5 +12,5 @@ class NextDayWeatherForecastEntity extends WeatherEntity {
     required super.forecast,
   });
 
-  int get dayOfWeek => day.weekday;
+  int get dayOfWeek => day?.weekday ?? -1;
 }

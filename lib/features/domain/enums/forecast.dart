@@ -1,27 +1,10 @@
-import 'package:weather_clean_app/core/extensions.dart';
+enum Forecast {
+  clean(id: 1),
+  rain(id: 2),
+  cloudy(id: 3),
+  storm(id: 4);
 
-enum Forecast { clean, rain, cloudy, storm }
+  const Forecast({required this.id});
 
-extension ForecastExt on Forecast {
-  static final List<Map<String, dynamic>> _forecasts = [
-    {
-      'id': 1,
-      'forecast': Forecast.clean,
-    },
-    {
-      'id': 2,
-      'forecast': Forecast.rain,
-    },
-    {
-      'id': 3,
-      'forecast': Forecast.cloudy,
-    },
-    {
-      'id': 4,
-      'forecast': Forecast.storm,
-    },
-  ];
-
-  static Forecast getByName(String name) =>
-      _forecasts.firstWhereOrNull((e) => e['forecast'].name == name)?['forecast'] ?? Forecast.clean;
+  final int id;
 }

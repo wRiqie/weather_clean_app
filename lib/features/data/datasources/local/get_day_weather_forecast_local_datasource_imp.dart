@@ -14,7 +14,7 @@ class GetDayWeatherForecastLocalDataSourceImp
       {
         'hour': TimeOfDay.now().hour,
         'temperature': 28,
-        'rainfallChance': 46,
+        'rainfallChance': 46.0,
         'windsVelocity': 20,
         'day': DateTime.now().toUtc().toString(),
         'forecast': 'rain',
@@ -22,7 +22,7 @@ class GetDayWeatherForecastLocalDataSourceImp
       {
         'hour': TimeOfDay.now().hour - 1,
         'temperature': 21,
-        'rainfallChance': 50,
+        'rainfallChance': 50.0,
         'windsVelocity': 20,
         'day': DateTime.now().toUtc().toString(),
         'forecast': 'rain',
@@ -30,7 +30,7 @@ class GetDayWeatherForecastLocalDataSourceImp
       {
         'hour': TimeOfDay.now().hour - 2,
         'temperature': 31,
-        'rainfallChance': 40,
+        'rainfallChance': 40.0,
         'windsVelocity': 20,
         'day': DateTime.now().toUtc().toString(),
         'forecast': 'cloudy',
@@ -38,7 +38,7 @@ class GetDayWeatherForecastLocalDataSourceImp
       {
         'hour': TimeOfDay.now().hour - 3,
         'temperature': 27,
-        'rainfallChance': 48,
+        'rainfallChance': 48.0,
         'windsVelocity': 21,
         'day': DateTime.now().toUtc().toString(),
         'forecast': 'cloudy',

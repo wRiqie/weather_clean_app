@@ -24,8 +24,9 @@ class NextDayWeatherForecastDto extends NextDayWeatherForecastEntity {
     return NextDayWeatherForecastDto(
       maxTemp: map['maxTemp'],
       minTemp: map['minTemp'],
-      day: DateTime.parse(map['day']),
-      forecast: ForecastExt.getByName(map['forecast']),
+      day: map['day'],
+      forecast: Forecast.values
+          .firstWhere((e) => e.name == (map['forecast'] ?? 'clean')),
     );
   }
 

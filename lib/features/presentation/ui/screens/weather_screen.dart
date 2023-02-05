@@ -1,10 +1,19 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:get_it/get_it.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:weather_clean_app/core/images.dart';
+import 'package:weather_clean_app/features/domain/entities/location_entity.dart';
+import 'package:weather_clean_app/features/presentation/blocs/day_forecast/day_forecast_event.dart';
+import 'package:weather_clean_app/features/presentation/blocs/day_forecast/day_forecast_state.dart';
+import 'package:weather_clean_app/features/presentation/blocs/next_days_forecast/next_days_forecast_event.dart';
 import 'package:weather_clean_app/features/presentation/ui/widgets/forecast_card.dart';
 import 'package:weather_clean_app/features/presentation/ui/widgets/label_icon.dart';
 import 'package:weather_clean_app/features/presentation/ui/widgets/next_forecast_list_tile.dart';
 import 'package:weather_clean_app/features/presentation/ui/widgets/weather_card.dart';
+
+import '../../blocs/day_forecast/day_forecast_bloc.dart';
+import '../../blocs/next_days_forecast/next_days_forecast_bloc.dart';
 
 class WeatherScreen extends StatefulWidget {
   const WeatherScreen({super.key});
@@ -14,8 +23,33 @@ class WeatherScreen extends StatefulWidget {
 }
 
 class _WeatherScreenState extends State<WeatherScreen> {
-  // final dayWeatherBloc = GetIt.I.get<DayForecastBloc>();
-  // final nextDayWeatherBloc = GetIt.I.get<NextDaysForecastBloc>();
+  final nextDayWeatherBloc = NextDaysForecastBloc(GetIt.I.get());
+  late final DayForecastBloc dayWeatherBloc;
+
+  @override
+  void initState() {
+    super.initState();
+    dayWeatherBloc = DayForecastBloc(GetIt.I.get(), nextDayWeatherBloc);
+
+    final location = LocationEntity(
+      city: 'Barra Bonita',
+      uf: 'SP',
+      country: 'Brasil',
+      lat: 0,
+      long: 0,
+    );
+
+    final day = DateTime.now();
+    dayWeatherBloc.add(DayForecastLoadEvent(day, location));
+    nextDayWeatherBloc.add(NextDaysForecastLoadEvent(day, location));
+  }
+
+  @override
+  void dispose() {
+    dayWeatherBloc.close();
+    nextDayWeatherBloc.close();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -257,6 +291,20 @@ class _WeatherScreenState extends State<WeatherScreen> {
               ),
             ),
           ),
+          BlocBuilder<DayForecastBloc, DayForecastState>(
+            bloc: dayWeatherBloc,
+            builder: (context, state) {
+              return Visibility(
+                visible: true,
+                child: Container(
+                  color: Colors.black38,
+                  child: const Center(
+                    child: CircularProgressIndicator(),
+                  ),
+                ),
+              );
+            },
+          )
         ],
       ),
     );

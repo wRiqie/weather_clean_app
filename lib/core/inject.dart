@@ -38,7 +38,7 @@ class Inject {
         () => GetNextDayWeatherForecastsUseCaseImp(getIt()));
 
     // blocs
-    getIt.registerFactory<DayForecastBloc>(() => DayForecastBloc(getIt()));
-    getIt.registerFactory<NextDaysForecastBloc>(() => NextDaysForecastBloc(getIt()));
+    // getIt.registerFactory<DayForecastBloc>(() => DayForecastBloc(getIt()));
+    // getIt.registerFactory<NextDaysForecastBloc>(() => NextDaysForecastBloc(getIt()));
   }
 }

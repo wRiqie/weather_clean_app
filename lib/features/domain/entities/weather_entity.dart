@@ -1,7 +1,7 @@
 import '../enums/forecast.dart';
 
 class WeatherEntity {
-  final DateTime day;
+  final DateTime? day;
   final Forecast forecast;
 
   WeatherEntity({

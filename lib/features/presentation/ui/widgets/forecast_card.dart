@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:weather_clean_app/core/images.dart';
 
 class ForecastCard extends StatelessWidget {
   final int hour;
