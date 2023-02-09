@@ -42,12 +42,12 @@ void main() {
     expect(res.data, isEmpty);
   });
 
-  test('should return a empty message', () async {
+  test('should return a null message', () async {
     when(() => getNextDayWeatherForecastsDatasource(any(), location))
         .thenAnswer(
             (_) => Future.value(DefaultResponseEntity(isSuccess: true, data: [])));
     final res =
         await getNextDayWeatherForecastsUseCase(DateTime.now(), location);
-    expect(res.message, isEmpty);
+    expect(res.message, isNull);
   });
 }

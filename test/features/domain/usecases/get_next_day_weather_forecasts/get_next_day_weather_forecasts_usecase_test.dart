@@ -31,8 +31,8 @@ void main() {
     expect(res.data, []);
   });
   
-  test('should return a empty message', () async {
+  test('should return a null message', () async {
     final res = await getNextDayWeatherForecastsUseCase(DateTime.now(), location);
-    expect(res.message, isEmpty);
+    expect(res.message, isNull);
   });
 }

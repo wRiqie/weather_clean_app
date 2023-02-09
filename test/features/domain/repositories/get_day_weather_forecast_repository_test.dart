@@ -36,10 +36,10 @@ void main() {
     expect(res.data, isNull);
   });
 
-  test('should return a empty message', () async {
+  test('should return a null message', () async {
   when(() => getDayWeatherForecastDataSource(any(), location))
       .thenAnswer((_) => Future.value(DefaultResponseEntity(isSuccess: true)));
     final res = await getDayWeatherForecastRepository(DateTime.now(), location);
-    expect(res.message, isEmpty);
+    expect(res.message, isNull);
   });
 }

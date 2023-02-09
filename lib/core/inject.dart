@@ -1,7 +1,6 @@
 import 'package:get_it/get_it.dart';
+import 'package:weather_clean_app/features/presentation/blocs/weather/weather_bloc.dart';
 
-import '../features/presentation/blocs/day_forecast/day_forecast_bloc.dart';
-import '../features/presentation/blocs/next_days_forecast/next_days_forecast_bloc.dart';
 import '../features/data/datasources/get_day_weather_forecast_datasource.dart';
 import '../features/data/datasources/get_next_day_weather_forecasts_datasource.dart';
 import '../features/data/datasources/local/get_day_weather_forecast_local_datasource_imp.dart';
@@ -38,7 +37,6 @@ class Inject {
         () => GetNextDayWeatherForecastsUseCaseImp(getIt()));
 
     // blocs
-    // getIt.registerFactory<DayForecastBloc>(() => DayForecastBloc(getIt()));
-    // getIt.registerFactory<NextDaysForecastBloc>(() => NextDaysForecastBloc(getIt()));
+    getIt.registerFactory<WeatherBloc>(() => WeatherBloc(getIt(), getIt()));
   }
 }
