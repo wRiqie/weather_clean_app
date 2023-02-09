@@ -6,3 +6,7 @@ extension ListExt<T> on List<T> {
     return null;
   }
 }
+
+extension StringExt on String {
+  String get toCapitalized => this[0].toUpperCase() + substring(1);
+}

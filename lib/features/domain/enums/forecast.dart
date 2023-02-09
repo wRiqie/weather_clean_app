@@ -1,10 +1,13 @@
-enum Forecast {
-  clean(id: 1),
-  rain(id: 2),
-  cloudy(id: 3),
-  storm(id: 4);
+import 'package:weather_clean_app/core/images.dart';
 
-  const Forecast({required this.id});
+enum Forecast {
+  clean(id: 1, imgPath: Images.cloudSun),
+  rain(id: 2, imgPath: Images.cloudSunRain),
+  cloudy(id: 3, imgPath: Images.cloud),
+  storm(id: 4, imgPath: Images.cloudRain);
+
+  const Forecast({required this.id, required this.imgPath});
 
   final int id;
+  final String imgPath;
 }

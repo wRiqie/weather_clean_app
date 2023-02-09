@@ -2,8 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:get_it/get_it.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:weather_clean_app/core/extensions.dart';
 import 'package:weather_clean_app/core/images.dart';
+import 'package:weather_clean_app/features/domain/entities/day_weather_entity.dart';
 import 'package:weather_clean_app/features/domain/entities/location_entity.dart';
+import 'package:weather_clean_app/features/domain/enums/days_of_week_enum.dart';
 import 'package:weather_clean_app/features/presentation/blocs/weather/weather_bloc.dart';
 import 'package:weather_clean_app/features/presentation/blocs/weather/weather_event.dart';
 import 'package:weather_clean_app/features/presentation/blocs/weather/weather_state.dart';
@@ -66,9 +69,9 @@ class _WeatherScreenState extends State<WeatherScreen> {
             ),
           ),
           SafeArea(
-            child: Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 24),
-              child: SingleChildScrollView(
+            child: SingleChildScrollView(
+              child: Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 24),
                 child: Column(
                   children: [
                     Row(
@@ -148,14 +151,28 @@ class _WeatherScreenState extends State<WeatherScreen> {
                             color: Colors.transparent,
                           ),
                         ),
-                        Text(
-                          '28°',
-                          style: GoogleFonts.roboto(
-                            fontSize: 64,
-                            fontWeight: FontWeight.w600,
-                            color: Colors.white,
-                          ),
-                        ),
+                        BlocBuilder<WeatherBloc, WeatherState>(
+                            bloc: weatherBloc,
+                            builder: (context, state) {
+                              if (state.status.isSuccess) {
+                                return Text(
+                                  '${state.dayWeatherForecasts?.weathers.first.temperature ?? 0}°',
+                                  style: GoogleFonts.roboto(
+                                    fontSize: 64,
+                                    fontWeight: FontWeight.w600,
+                                    color: Colors.white,
+                                  ),
+                                );
+                              }
+                              return Text(
+                                '0°',
+                                style: GoogleFonts.roboto(
+                                  fontSize: 64,
+                                  fontWeight: FontWeight.w600,
+                                  color: Colors.white,
+                                ),
+                              );
+                            }),
                       ],
                     ),
                     const SizedBox(
@@ -171,22 +188,50 @@ class _WeatherScreenState extends State<WeatherScreen> {
                     Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                        Text(
-                          'Max.: 31°',
-                          style: GoogleFonts.roboto(
-                            fontSize: 18,
-                            color: Colors.white,
-                          ),
+                        BlocBuilder<WeatherBloc, WeatherState>(
+                          bloc: weatherBloc,
+                          builder: (context, state) {
+                            if (state.status.isSuccess) {
+                              return Text(
+                                'Max.: ${state.dayWeatherForecasts?.weathers.max ?? 0}°',
+                                style: GoogleFonts.roboto(
+                                  fontSize: 18,
+                                  color: Colors.white,
+                                ),
+                              );
+                            }
+                            return Text(
+                              'Max.: 0°',
+                              style: GoogleFonts.roboto(
+                                fontSize: 18,
+                                color: Colors.white,
+                              ),
+                            );
+                          },
                         ),
                         const SizedBox(
                           width: 10,
                         ),
-                        Text(
-                          'Min.: 31°',
-                          style: GoogleFonts.roboto(
-                            fontSize: 18,
-                            color: Colors.white,
-                          ),
+                        BlocBuilder<WeatherBloc, WeatherState>(
+                          bloc: weatherBloc,
+                          builder: (context, state) {
+                            if (state.status.isSuccess) {
+                              return Text(
+                                'Min.: ${state.dayWeatherForecasts?.weathers.min ?? 0}°',
+                                style: GoogleFonts.roboto(
+                                  fontSize: 18,
+                                  color: Colors.white,
+                                ),
+                              );
+                            }
+                            return Text(
+                              'Min.: 0°',
+                              style: GoogleFonts.roboto(
+                                fontSize: 18,
+                                color: Colors.white,
+                              ),
+                            );
+                          },
                         ),
                       ],
                     ),
@@ -194,30 +239,58 @@ class _WeatherScreenState extends State<WeatherScreen> {
                       height: 31,
                     ),
                     Container(
-                      padding: const EdgeInsets.symmetric(
-                          horizontal: 25, vertical: 10),
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(20),
-                        color: cardColor,
-                      ),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: const [
-                          LabelIcon(
-                            icon: Icons.grain,
-                            label: '6%',
-                          ),
-                          LabelIcon(
-                            icon: Icons.thermostat,
-                            label: '90%',
-                          ),
-                          LabelIcon(
-                            icon: Icons.air,
-                            label: '19 km/h',
-                          ),
-                        ],
-                      ),
-                    ),
+                        padding: const EdgeInsets.symmetric(
+                            horizontal: 25, vertical: 10),
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(20),
+                          color: cardColor,
+                        ),
+                        child: BlocBuilder<WeatherBloc, WeatherState>(
+                          bloc: weatherBloc,
+                          builder: (context, state) {
+                            if (state.status.isSuccess) {
+                              return Row(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
+                                children: [
+                                  LabelIcon(
+                                    icon: Icons.grain,
+                                    label:
+                                        '${(state.dayWeatherForecasts?.weathers.first.rainfallChance ?? 0).toStringAsFixed(0)}%',
+                                  ),
+                                  LabelIcon(
+                                    icon: Icons.thermostat,
+                                    label:
+                                        '${state.dayWeatherForecasts?.weathers.first.temperature ?? 0}%',
+                                  ),
+                                  LabelIcon(
+                                    icon: Icons.air,
+                                    label:
+                                        '${state.dayWeatherForecasts?.weathers.first.windsVelocity ?? 0} km/h',
+                                  ),
+                                ],
+                              );
+                            }
+
+                            return Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: const [
+                                LabelIcon(
+                                  icon: Icons.grain,
+                                  label: '0%',
+                                ),
+                                LabelIcon(
+                                  icon: Icons.thermostat,
+                                  label: '0%',
+                                ),
+                                LabelIcon(
+                                  icon: Icons.air,
+                                  label: '0 km/h',
+                                ),
+                              ],
+                            );
+                          },
+                        )),
                     const SizedBox(
                       height: 20,
                     ),
@@ -231,51 +304,57 @@ class _WeatherScreenState extends State<WeatherScreen> {
                         ),
                       ),
                       children: [
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: const [
-                            ForecastCard(
-                              hour: 12,
-                              image: Images.cloudSun,
-                              temp: 24,
-                            ),
-                            ForecastCard(
-                              hour: 13,
-                              image: Images.cloudSun,
-                              temp: 24,
-                            ),
-                            ForecastCard(
-                              hour: 14,
-                              image: Images.cloud,
-                              temp: 24,
-                              isSelected: true,
-                            ),
-                            ForecastCard(
-                              hour: 15,
-                              image: Images.cloudSun,
-                              temp: 24,
-                            ),
-                          ],
+                        BlocBuilder<WeatherBloc, WeatherState>(
+                          bloc: weatherBloc,
+                          builder: (context, state) {
+                            if (state.status.isSuccess) {
+                              return Row(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
+                                children: state.dayWeatherForecasts?.weathers
+                                        .orderByHour
+                                        .map((e) => ForecastCard(
+                                            hour: e.hour,
+                                            image: e.forecast.imgPath,
+                                            temp: e.temperature))
+                                        .toList() ??
+                                    [],
+                              );
+                            }
+                            return Container();
+                          },
                         ),
                       ],
                     ),
                     const SizedBox(
                       height: 20,
                     ),
-                    const WeatherCard(
-                      title: 'Next Forecast',
-                      subtitleWidget: Icon(
-                        Icons.calendar_month,
-                        color: Colors.white,
-                      ),
-                      children: [
-                        NextForecastListTile(
-                          day: 'Monday',
-                          image: Images.rainDrops,
-                          max: 15,
-                          min: 10,
-                        ),
-                      ],
+                    BlocBuilder<WeatherBloc, WeatherState>(
+                      bloc: weatherBloc,
+                      builder: (context, state) {
+                        return WeatherCard(
+                          title: 'Next Forecast',
+                          subtitleWidget: const Icon(
+                            Icons.calendar_month,
+                            color: Colors.white,
+                          ),
+                          children: state.status.isSuccess
+                              ? state.nexDayWeatherForecasts
+                                  .map(
+                                    (e) => NextForecastListTile(
+                                      day: DayOfWeekEnum.getByWeekDay(
+                                              e.dayOfWeek)
+                                          .name
+                                          .toCapitalized,
+                                      image: e.forecast.imgPath,
+                                      max: e.maxTemp,
+                                      min: e.minTemp,
+                                    ),
+                                  )
+                                  .toList()
+                              : [],
+                        );
+                      },
                     ),
                     const SizedBox(
                       height: 20,

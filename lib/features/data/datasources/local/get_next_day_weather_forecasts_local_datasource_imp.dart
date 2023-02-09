@@ -1,4 +1,3 @@
-
 import '../../../domain/entities/default_response_entity.dart';
 import '../../../domain/entities/location_entity.dart';
 import '../../../domain/entities/next_day_weather_forecast_entity.dart';
@@ -31,8 +30,9 @@ class GetNextDayWeatherForecastsLocalDatasourceImp
   @override
   Future<DefaultResponseEntity<List<NextDayWeatherForecastEntity>>> call(
       DateTime date, LocationEntity location) {
-    return Future.value(
-      DefaultResponseEntity(
+    return Future.delayed(
+      const Duration(seconds: 3),
+      () => DefaultResponseEntity(
           isSuccess: true,
           data: jsonMap
               .map((e) => NextDayWeatherForecastDto.fromMap(e))

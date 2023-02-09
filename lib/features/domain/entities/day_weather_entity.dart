@@ -24,4 +24,11 @@ extension DayWeatherListExt on List<DayWeatherEntity> {
   int get min => temps.reduce(math.min);
 
   int get max => temps.reduce(math.max);
+
+  List<DayWeatherEntity> get orderByHour {
+    sort(
+      (a, b) => a.hour.compareTo(b.hour),
+    );
+    return this;
+  }
 }

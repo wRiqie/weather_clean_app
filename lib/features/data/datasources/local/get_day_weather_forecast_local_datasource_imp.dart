@@ -49,8 +49,9 @@ class GetDayWeatherForecastLocalDataSourceImp
   @override
   Future<DefaultResponseEntity<DayWeatherForecastsEntity>> call(
       DateTime date, LocationEntity location) {
-    return Future.value(
-      DefaultResponseEntity(
+    return Future.delayed(
+      const Duration(seconds: 4),
+      () => DefaultResponseEntity(
         isSuccess: true,
         data: DayWeatherForecastsDto.fromMap(jsonMap),
       ),
