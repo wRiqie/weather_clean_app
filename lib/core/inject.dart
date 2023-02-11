@@ -35,8 +35,5 @@ class Inject {
         () => GetDayWeatherForecastsUseCaseImp(getIt()));
     getIt.registerLazySingleton<GetNextDayWeatherForecastsUseCase>(
         () => GetNextDayWeatherForecastsUseCaseImp(getIt()));
-
-    // blocs
-    getIt.registerFactory<WeatherBloc>(() => WeatherBloc(getIt(), getIt()));
   }
 }

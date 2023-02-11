@@ -6,4 +6,5 @@ class Images {
   static const cloud = 'assets/icons/cloud.png';
   static const rainDrops = 'assets/icons/rain_drops.png';
   static const sun = 'assets/icons/sun.png';
+  static const loader = 'assets/icons/loader.svg';
 }
