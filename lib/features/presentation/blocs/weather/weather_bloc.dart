@@ -13,51 +13,26 @@ class WeatherBloc extends Bloc<WeatherEvent, WeatherState> {
     this._getDayWeatherForecastsUseCase,
     this._getNextDayWeatherForecastsUseCase,
   ) : super(WeatherState()) {
-    on<WeatherGetDayForecastEvent>(_mapDayForecastEventToState);
-    on<WeatherGetNextDaysForecastEvent>(_mapNextDaysForecastEventToState);
+    on<WeatherLoadForecastEvent>(_mapLoadForecastEventToState);
   }
 
-  void _mapDayForecastEventToState(
-      WeatherGetDayForecastEvent event, Emitter<WeatherState> emit) async {
+  void _mapLoadForecastEventToState(
+      WeatherLoadForecastEvent event, Emitter<WeatherState> emit) async {
     emit(state.copyWith(status: WeatherStatus.loading));
-    final response =
+    final dayResponse =
         await _getDayWeatherForecastsUseCase(event.date, event.location);
-    if (response.isSuccess) {
-      if (response.data == null) {
-        emit(state.copyWith(
-          status: WeatherStatus.error,
-          error: "Unable to retrieve today's weather forecast",
-        ));
-        return;
-      }
-      emit(state.copyWith(
-        status: WeatherStatus.success,
-        dayWeatherForecasts: response.data,
-      ));
-    } else {
-      emit(state.copyWith(
-        status: WeatherStatus.error,
-        error: response.message,
-      ));
-    }
-  }
-
-  void _mapNextDaysForecastEventToState(
-      WeatherGetNextDaysForecastEvent event, Emitter<WeatherState> emit) async {
-    emit(state.copyWith(
-      status: WeatherStatus.loading,
-    ));
-    final response =
+    final nextDaysResponse =
         await _getNextDayWeatherForecastsUseCase(event.date, event.location);
-    if (response.isSuccess) {
+    if (dayResponse.isSuccess && nextDaysResponse.isSuccess) {
       emit(state.copyWith(
         status: WeatherStatus.success,
-        nexDayWeatherForecasts: response.data,
+        dayWeatherForecasts: dayResponse.data,
+        nexDayWeatherForecasts: nextDaysResponse.data,
       ));
     } else {
       emit(state.copyWith(
         status: WeatherStatus.error,
-        error: response.message,
+        error: dayResponse.message ?? nextDaysResponse.message,
       ));
     }
   }

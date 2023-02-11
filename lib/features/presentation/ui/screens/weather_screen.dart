@@ -38,8 +38,7 @@ class _WeatherScreenState extends State<WeatherScreen> {
 
     final date = DateTime.now();
 
-    weatherBloc.add(WeatherGetDayForecastEvent(date, location));
-    weatherBloc.add(WeatherGetNextDaysForecastEvent(date, location));
+    weatherBloc.add(WeatherLoadForecastEvent(date, location));
   }
 
   @override

@@ -24,13 +24,13 @@ class WeatherState {
   });
 
   WeatherState copyWith({
-    WeatherStatus? status,
+    required WeatherStatus status,
     DayWeatherForecastsEntity? dayWeatherForecasts,
     List<NextDayWeatherForecastEntity>? nexDayWeatherForecasts,
     String? error,
   }) {
     return WeatherState(
-      status: status ?? this.status,
+      status: status,
       dayWeatherForecasts: dayWeatherForecasts ?? this.dayWeatherForecasts,
       nexDayWeatherForecasts: nexDayWeatherForecasts ?? this.nexDayWeatherForecasts,
       error: error ?? this.error,

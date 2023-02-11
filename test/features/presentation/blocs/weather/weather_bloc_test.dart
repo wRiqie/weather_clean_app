@@ -39,110 +39,81 @@ void main() {
     expect(weatherBloc.state.status, equals(WeatherStatus.idle));
   });
 
-  group('[getDayForecastEvent]', () {
-    final location =
-        LocationEntity(city: '', uf: '', country: '', lat: 0, long: 0);
+  final location =
+      LocationEntity(city: '', uf: '', country: '', lat: 0, long: 0);
 
-    blocTest<WeatherBloc, WeatherState>(
-      'should emit DayForecastLoadingState - DayForecastSuccessState when isSuccess is true and has data',
-      build: () => weatherBloc,
-      act: (bloc) {
-        when(() => getDayWeatherForecastsUseCase(any(), location)).thenAnswer(
-            (_) => Future.value(DefaultResponseEntity(
-                isSuccess: true,
-                data: DayWeatherForecastsEntity(
-                    day: DateTime.now(), weathers: []))));
-        bloc.add(WeatherGetDayForecastEvent(DateTime.now(), location));
-      },
-      expect: () => [
-        isA<WeatherState>()
-            .having((e) => e.status.isLoading, 'isLoading', isTrue),
-        isA<WeatherState>()
-            .having((e) => e.status.isSuccess, 'isSuccess', isTrue),
-      ],
-    );
-
-    blocTest<WeatherBloc, WeatherState>(
-      'should emit DayForecastLoadingState - DayForecastErrorState when isSuccess is true but no has data',
-      build: () => weatherBloc,
-      act: (bloc) {
-        when(() => getDayWeatherForecastsUseCase(any(), location))
-            .thenAnswer((_) => Future.value(DefaultResponseEntity(
-                  isSuccess: true,
-                )));
-        bloc.add(WeatherGetDayForecastEvent(DateTime.now(), location));
-      },
-      expect: () => [
-        isA<WeatherState>()
-            .having((e) => e.status.isLoading, 'isLoading', isTrue),
-        isA<WeatherState>()
-            .having((e) => e.status.isError, 'isError', isTrue)
-            .having((e) => e.error?.isNotEmpty, 'isNotEmpty', isTrue),
-      ],
-    );
-
-    blocTest<WeatherBloc, WeatherState>(
-      'should emit DayForecastLoadingState - DayForecastErrorState when isSuccess is false',
-      build: () => weatherBloc,
-      act: (bloc) {
-        when(() => getDayWeatherForecastsUseCase(any(), location)).thenAnswer(
-            (_) => Future.value(
-                DefaultResponseEntity(isSuccess: false, message: 'error')));
-        bloc.add(WeatherGetDayForecastEvent(DateTime.now(), location));
-      },
-      expect: () => [
-        isA<WeatherState>()
-            .having((e) => e.status.isLoading, 'isLoading', isTrue),
-        isA<WeatherState>()
-            .having((e) => e.status.isError, 'isError', isTrue)
-            .having((e) => e.error?.isNotEmpty, 'isNotEmpty', isTrue),
-      ],
-    );
-  });
-
-  group('[getNextDaysForecastEvent]', () {
-    final location =
-        LocationEntity(city: '', uf: '', country: '', lat: 0, long: 0);
-
-    blocTest<WeatherBloc, WeatherState>(
-      'should return LoadingState - SuccessState when isSuccess is true',
-      build: () => weatherBloc,
-      act: (bloc) {
-        when(() => getNextDayWeatherForecastsUsecase(any(), location))
-            .thenAnswer(
-          (_) => Future.value(
-            DefaultResponseEntity(isSuccess: true),
+  blocTest(
+    'should emit loadingStatus - successStatus when all data were loaded',
+    build: () => weatherBloc,
+    act: (bloc) {
+      when(() => getDayWeatherForecastsUseCase(any(), location)).thenAnswer(
+        (_) => Future.value(
+          DefaultResponseEntity(
+            isSuccess: true,
+            data: DayWeatherForecastsEntity(day: DateTime.now(), weathers: []),
           ),
-        );
-        bloc.add(WeatherGetNextDaysForecastEvent(DateTime.now(), location));
-      },
-      expect: () => [
-        isA<WeatherState>()
-            .having((e) => e.status.isLoading, 'isLoading', isTrue),
-        isA<WeatherState>()
-            .having((e) => e.status.isSuccess, 'isSuccess', isTrue),
-      ],
-    );
+        ),
+      );
+      when(() => getNextDayWeatherForecastsUsecase(any(), location)).thenAnswer(
+        (_) => Future.value(
+          DefaultResponseEntity(isSuccess: true),
+        ),
+      );
+      bloc.add(WeatherLoadForecastEvent(DateTime.now(), location));
+    },
+    expect: () => [
+      isA<WeatherState>()
+          .having((e) => e.status.isLoading, 'isLoading', isTrue),
+      isA<WeatherState>()
+          .having((e) => e.status.isSuccess, 'isSuccess', isTrue)
+          .having((e) => e.dayWeatherForecasts, 'isNotNull', isNotNull)
+          .having((e) => e.nexDayWeatherForecasts, 'isNotNull', isNotNull)
+    ],
+  );
 
-    blocTest<WeatherBloc, WeatherState>(
-      'should return LoadingState - ErrorState when isSuccess is false',
-      build: () => weatherBloc,
-      act: (bloc) {
-        when(() => getNextDayWeatherForecastsUsecase(any(), location))
-            .thenAnswer(
+  blocTest(
+    'should emit loadingStatus - ErrorStatus when isSuccess of dayForecast is false',
+    build: () => weatherBloc,
+    act: (bloc) {
+      when(() => getDayWeatherForecastsUseCase(any(), location)).thenAnswer(
           (_) => Future.value(
-            DefaultResponseEntity(isSuccess: false, message: 'error'),
-          ),
-        );
-        bloc.add(WeatherGetNextDaysForecastEvent(DateTime.now(), location));
-      },
-      expect: () => [
-        isA<WeatherState>()
-            .having((e) => e.status.isLoading, 'isLoading', isTrue),
-        isA<WeatherState>()
-            .having((e) => e.status.isError, 'isError', isTrue)
-            .having((e) => e.error?.isNotEmpty, 'isNotEmpty', isTrue),
-      ],
-    );
-  });
+              DefaultResponseEntity(isSuccess: false, message: 'error')));
+      when(() => getNextDayWeatherForecastsUsecase(any(), location)).thenAnswer(
+        (_) => Future.value(
+          DefaultResponseEntity(isSuccess: true),
+        ),
+      );
+      bloc.add(WeatherLoadForecastEvent(DateTime.now(), location));
+    },
+    expect: () => [
+      isA<WeatherState>()
+          .having((e) => e.status.isLoading, 'isLoading', isTrue),
+      isA<WeatherState>()
+          .having((e) => e.status.isError, 'isError', isTrue)
+          .having((e) => e.error, 'error', equals('error'))
+    ],
+  );
+
+  blocTest(
+    'should emit loadingStatus - ErrorStatus when isSuccess of nextDaysForecast is false',
+    build: () => weatherBloc,
+    act: (bloc) {
+      when(() => getDayWeatherForecastsUseCase(any(), location)).thenAnswer(
+          (_) => Future.value(
+              DefaultResponseEntity(isSuccess: true)));
+      when(() => getNextDayWeatherForecastsUsecase(any(), location)).thenAnswer(
+        (_) => Future.value(
+          DefaultResponseEntity(isSuccess: false, message: 'error'),
+        ),
+      );
+      bloc.add(WeatherLoadForecastEvent(DateTime.now(), location));
+    },
+    expect: () => [
+      isA<WeatherState>()
+          .having((e) => e.status.isLoading, 'isLoading', isTrue),
+      isA<WeatherState>()
+          .having((e) => e.status.isError, 'isError', isTrue)
+          .having((e) => e.error, 'error', equals('error'))
+    ],
+  );
 }
